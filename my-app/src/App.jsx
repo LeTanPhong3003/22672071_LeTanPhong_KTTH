@@ -1,8 +1,13 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import StudentItem from './components/StudentItem';
 
 function App() {
   // Danh sách sinh viên mẫu
-  const [students, setStudents] = useState([]);
+  const [students, setStudents] = useState(() => {
+    // Lấy danh sách từ localStorage khi ứng dụng khởi động
+    const storedStudents = localStorage.getItem('students');
+    return storedStudents ? JSON.parse(storedStudents) : [];
+  });
 
   // State để lưu thông tin sinh viên mới
   const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
@@ -16,17 +21,8 @@ function App() {
   // State để lưu lớp được chọn
   const [selectedClass, setSelectedClass] = useState('');
 
-  // Tải danh sách sinh viên từ localStorage khi ứng dụng khởi động
-  useEffect(() => {
-    const storedStudents = localStorage.getItem('students');
-    if (storedStudents) {
-      setStudents(JSON.parse(storedStudents));
-    }
-  }, []);
-
   // Lưu danh sách sinh viên vào localStorage mỗi khi danh sách thay đổi
   useEffect(() => {
-    console.log('Danh sách sinh viên được lưu:', students);
     localStorage.setItem('students', JSON.stringify(students));
   }, [students]);
 
@@ -147,25 +143,12 @@ function App() {
           </thead>
           <tbody>
             {filteredStudents.map((student) => (
-              <tr key={student.id} className="border-b hover:bg-gray-100">
-                <td className="px-4 py-2">{student.name}</td>
-                <td className="px-4 py-2 text-center">{student.class}</td>
-                <td className="px-4 py-2 text-center">{student.age}</td>
-                <td className="px-4 py-2 text-center">
-                  <button
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 mr-2"
-                    onClick={() => handleDeleteStudent(student.id)}
-                  >
-                    Xoá
-                  </button>
-                  <button
-                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                    onClick={() => setEditingStudent(student)}
-                  >
-                    Sửa
-                  </button>
-                </td>
-              </tr>
+              <StudentItem
+                key={student.id}
+                student={student}
+                onDelete={handleDeleteStudent}
+                onEdit={setEditingStudent}
+              />
             ))}
           </tbody>
         </table>
