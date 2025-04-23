@@ -14,6 +14,9 @@ function App() {
   // State để lưu sinh viên đang được chỉnh sửa
   const [editingStudent, setEditingStudent] = useState(null);
 
+  // State để lưu từ khóa tìm kiếm
+  const [searchTerm, setSearchTerm] = useState('');
+
   // Hàm xử lý thêm sinh viên
   const handleAddStudent = () => {
     if (newStudent.name && newStudent.class && newStudent.age) {
@@ -43,9 +46,25 @@ function App() {
     setEditingStudent(null); // Đóng form chỉnh sửa
   };
 
+  // Lọc danh sách sinh viên theo từ khóa tìm kiếm
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold text-center mb-6">Quản lý danh sách sinh viên</h1>
+
+      {/* Input tìm kiếm */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Tìm kiếm sinh viên theo tên..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border px-3 py-2 rounded w-full"
+        />
+      </div>
 
       {/* Form thêm sinh viên */}
       <div className="mb-6 bg-white p-4 shadow-md rounded-lg">
@@ -93,7 +112,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {students.map((student) => (
+            {filteredStudents.map((student) => (
               <tr key={student.id} className="border-b hover:bg-gray-100">
                 <td className="px-4 py-2">{student.name}</td>
                 <td className="px-4 py-2 text-center">{student.class}</td>
