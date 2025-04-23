@@ -17,6 +17,9 @@ function App() {
   // State để lưu từ khóa tìm kiếm
   const [searchTerm, setSearchTerm] = useState('');
 
+  // State để lưu lớp được chọn
+  const [selectedClass, setSelectedClass] = useState('');
+
   // Hàm xử lý thêm sinh viên
   const handleAddStudent = () => {
     if (newStudent.name && newStudent.class && newStudent.age) {
@@ -46,10 +49,15 @@ function App() {
     setEditingStudent(null); // Đóng form chỉnh sửa
   };
 
-  // Lọc danh sách sinh viên theo từ khóa tìm kiếm
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Lọc danh sách sinh viên theo từ khóa tìm kiếm và lớp
+  const filteredStudents = students.filter((student) => {
+    const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesClass = selectedClass ? student.class === selectedClass : true;
+    return matchesSearch && matchesClass;
+  });
+
+  // Lấy danh sách các lớp duy nhất
+  const uniqueClasses = [...new Set(students.map((student) => student.class))];
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -64,6 +72,22 @@ function App() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border px-3 py-2 rounded w-full"
         />
+      </div>
+
+      {/* Dropdown chọn lớp */}
+      <div className="mb-6">
+        <select
+          value={selectedClass}
+          onChange={(e) => setSelectedClass(e.target.value)}
+          className="border px-3 py-2 rounded w-full"
+        >
+          <option value="">Tất cả các lớp</option>
+          {uniqueClasses.map((className) => (
+            <option key={className} value={className}>
+              {className}
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Form thêm sinh viên */}
