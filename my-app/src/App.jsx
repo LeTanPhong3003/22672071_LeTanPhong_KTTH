@@ -1,12 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
   // Danh sách sinh viên mẫu
-  const [students, setStudents] = useState([
-    { id: 1, name: 'Nguyen Van A', class: '10A1', age: 16 },
-    { id: 2, name: 'Tran Thi B', class: '10A2', age: 17 },
-    { id: 3, name: 'Le Van C', class: '10A3', age: 16 },
-  ]);
+  const [students, setStudents] = useState([]);
 
   // State để lưu thông tin sinh viên mới
   const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
@@ -19,6 +15,20 @@ function App() {
 
   // State để lưu lớp được chọn
   const [selectedClass, setSelectedClass] = useState('');
+
+  // Tải danh sách sinh viên từ localStorage khi ứng dụng khởi động
+  useEffect(() => {
+    const storedStudents = localStorage.getItem('students');
+    if (storedStudents) {
+      setStudents(JSON.parse(storedStudents));
+    }
+  }, []);
+
+  // Lưu danh sách sinh viên vào localStorage mỗi khi danh sách thay đổi
+  useEffect(() => {
+    console.log('Danh sách sinh viên được lưu:', students);
+    localStorage.setItem('students', JSON.stringify(students));
+  }, [students]);
 
   // Hàm xử lý thêm sinh viên
   const handleAddStudent = () => {
