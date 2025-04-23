@@ -11,6 +11,9 @@ function App() {
   // State để lưu thông tin sinh viên mới
   const [newStudent, setNewStudent] = useState({ name: '', class: '', age: '' });
 
+  // State để lưu sinh viên đang được chỉnh sửa
+  const [editingStudent, setEditingStudent] = useState(null);
+
   // Hàm xử lý thêm sinh viên
   const handleAddStudent = () => {
     if (newStudent.name && newStudent.class && newStudent.age) {
@@ -28,6 +31,16 @@ function App() {
   const handleDeleteStudent = (id) => {
     const updatedStudents = students.filter((student) => student.id !== id);
     setStudents(updatedStudents);
+  };
+
+  // Hàm xử lý lưu thông tin sau khi sửa
+  const handleSaveEdit = () => {
+    setStudents(
+      students.map((student) =>
+        student.id === editingStudent.id ? editingStudent : student
+      )
+    );
+    setEditingStudent(null); // Đóng form chỉnh sửa
   };
 
   return (
@@ -87,10 +100,16 @@ function App() {
                 <td className="px-4 py-2 text-center">{student.age}</td>
                 <td className="px-4 py-2 text-center">
                   <button
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 mr-2"
                     onClick={() => handleDeleteStudent(student.id)}
                   >
                     Xoá
+                  </button>
+                  <button
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                    onClick={() => setEditingStudent(student)}
+                  >
+                    Sửa
                   </button>
                 </td>
               </tr>
@@ -98,6 +117,62 @@ function App() {
           </tbody>
         </table>
       </div>
+
+      {/* Form chỉnh sửa sinh viên */}
+      {editingStudent && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-lg w-96">
+            <h2 className="text-lg font-semibold mb-4">Chỉnh sửa sinh viên</h2>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Họ tên"
+                value={editingStudent.name}
+                onChange={(e) =>
+                  setEditingStudent({ ...editingStudent, name: e.target.value })
+                }
+                className="border px-3 py-2 rounded w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="text"
+                placeholder="Lớp"
+                value={editingStudent.class}
+                onChange={(e) =>
+                  setEditingStudent({ ...editingStudent, class: e.target.value })
+                }
+                className="border px-3 py-2 rounded w-full"
+              />
+            </div>
+            <div className="mb-4">
+              <input
+                type="number"
+                placeholder="Tuổi"
+                value={editingStudent.age}
+                onChange={(e) =>
+                  setEditingStudent({ ...editingStudent, age: e.target.value })
+                }
+                className="border px-3 py-2 rounded w-full"
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setEditingStudent(null)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
