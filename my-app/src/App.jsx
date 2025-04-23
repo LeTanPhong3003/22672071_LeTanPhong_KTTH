@@ -24,6 +24,12 @@ function App() {
     }
   };
 
+  // Hàm xử lý xóa sinh viên
+  const handleDeleteStudent = (id) => {
+    const updatedStudents = students.filter((student) => student.id !== id);
+    setStudents(updatedStudents);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold text-center mb-6">Quản lý danh sách sinh viên</h1>
@@ -82,7 +88,7 @@ function App() {
                 <td className="px-4 py-2 text-center">
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                    onClick={() => alert(`Xoá sinh viên: ${student.name}`)}
+                    onClick={() => handleDeleteStudent(student.id)}
                   >
                     Xoá
                   </button>
